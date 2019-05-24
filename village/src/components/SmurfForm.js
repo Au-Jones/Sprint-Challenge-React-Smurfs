@@ -1,38 +1,53 @@
 import React, { Component } from 'react';
-import Axios from 'axios';
+import axios from 'axios';
+import Smurfs from './Smurfs'
+import {Link} from 'react-router-dom'
+
 
 class SmurfForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      smurfs:props.smurfs,
-      addSmurf:{
-      name: '',
-      age: '',
-      height: ''
+      smurfs: props.smurfs,
+      addSmurf: {
+        name: '',
+        age: '',
+        height: ''
       }
     };
   }
 
-  addSmurf = e => {
+  addSmurf = (e, smurf) => {
     e.preventDefault();
- this.props.addSmurf(e,this.state.friend);
-    // add code to create the smurf using the api
-
-    this.setState({
-      name: '',
-      age: '',
-      height: ''
-    });
+    axios
+    .post('http://localhost:3333/smurfs', {
+      name: this.state.name,
+      age: this.state.age,
+      height: this.state.height
+    })
+    .then(res => {this.setState({
+      smurfs: res.data
+    })})
+    .catch(err => {
+      console.log(err)
+    })
   }
 
   handleInputChange = e => {
     this.setState({ [e.target.name]: e.target.value });
   };
 
+  
+
+
   render() {
     return (
       <div className="SmurfForm">
+
+       
+      
+
+        <h2>New Smurf</h2>
         <form onSubmit={this.addSmurf}>
           <input
             onChange={this.handleInputChange}
@@ -41,12 +56,14 @@ class SmurfForm extends Component {
             name="name"
           />
           <input
+          type='number'
             onChange={this.handleInputChange}
             placeholder="age"
             value={this.state.age}
             name="age"
           />
           <input
+          type="number"
             onChange={this.handleInputChange}
             placeholder="height"
             value={this.state.height}
@@ -54,6 +71,7 @@ class SmurfForm extends Component {
           />
           <button type="submit">Add to the village</button>
         </form>
+
       </div>
     );
   }
